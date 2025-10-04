@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSS Product Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1111;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f1111;
+        }
+        
+        .logo-orange {
+            color: #FF9900;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #565959;
+            margin-top: 4px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 8px;
+        }
+        
+        .card-description {
+            font-size: 15px;
+            color: #565959;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #d5d9d9;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #f7f8f8;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 24px;
+        }
+        
+        .upload-zone:hover {
+            border-color: #FF9900;
+            background: #fff5e6;
+        }
+        
+        .upload-zone.has-file {
+            border-color: #FF9900;
+            background: #fff5e6;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f1111;
+            margin-bottom: 8px;
+        }
+        
+        .upload-subtext {
+            font-size: 14px;
+            color: #565959;
+        }
+        
+        .uploaded-image {
+            max-width: 400px;
+            max-height: 400px;
+            margin: 16px auto;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f1111;
+            margin-bottom: 8px;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d5d9d9;
+            border-radius: 4px;
+            font-size: 15px;
+            transition: border 0.2s;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #FF9900;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .form-hint {
+            font-size: 12px;
+            color: #565959;
+            margin-top: 4px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: #FF9900;
+            color: #0f1111;
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #fa8900;
+            transform: translateY(-1px);
+        }
+        
+        .btn-download {
+            background: #0f1111;
+            color: white;
+        }
+        
+        .btn-download:hover:not(:disabled) {
+            background: #232f3e;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-section {
+            background: #f7f8f8;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .result-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-content {
+            color: #0f1111;
+            line-height: 1.6;
+        }
+        
+        .result-content p {
+            margin-bottom: 12px;
+        }
+        
+        .result-content strong {
+            color: #FF9900;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: white;
+            border: 1px solid #d5d9d9;
+            padding: 6px 12px;
+            border-radius: 16px;
+            margin: 4px;
+            font-size: 13px;
+            color: #0f1111;
+        }
+        
+        .keyword-tag.hot {
+            background: #FF9900;
+            border-color: #FF9900;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .prompt-box {
+            background: #232f3e;
+            color: #ffffff;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 12px 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f0f2f2;
+            border-top: 3px solid #FF9900;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 40px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-text">
+                <span class="logo-orange">DSS</span> Product Generator
+            </div>
+            <div class="subtitle">Digital Seller School - Powered by n8n + OpenAI</div>
+        </div>
+        
+        <div class="card" id="step1">
+            <div class="card-title">Carica il Tuo Prodotto</div>
+            <div class="card-description">
+                Carica una foto o inserisci l'URL Amazon. L'agente DSS analizzerà tutto e genererà copy, keyword e guide professionali!
+            </div>
+            
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+                <div class="upload-icon">📦</div>
+                <div class="upload-text">Clicca o trascina qui la foto del prodotto</div>
+                <div class="upload-subtext">Opzionale - Formati supportati: JPG, PNG</div>
+                <input type="file" id="file-input" accept="image/*" style="display:none">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">URL Prodotto Amazon/Helium10 (consigliato)</label>
+                <input type="text" class="form-input" id="product-url" placeholder="https://amazon.it/... o link Helium10">
+                <div class="form-hint">
+                    L'agente DSS estrarrà informazioni dal link
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">URL Competitor (opzionali - max 3)</label>
+                <input type="text" class="form-input" id="competitor-url-1" placeholder="Competitor 1: https://amazon.it/..." style="margin-bottom: 8px;">
+                <input type="text" class="form-input" id="competitor-url-2" placeholder="Competitor 2: https://amazon.it/..." style="margin-bottom: 8px;">
+                <input type="text" class="form-input" id="competitor-url-3" placeholder="Competitor 3: https://amazon.it/...">
+                <div class="form-hint">
+                    L'agente analizzerà i competitor per creare copy migliore
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Nome Prodotto (opzionale)</label>
+                    <input type="text" class="form-input" id="product-name" placeholder="Es: Tagliere in Bambù">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoria *</label>
+                    <select class="form-select" id="category">
+                        <option>Casa & Cucina</option>
+                        <option>Sport & Fitness</option>
+                        <option>Bellezza & Cura</option>
+                        <option>Ufficio & Studio</option>
+                        <option>Auto & Moto</option>
+                        <option>Elettronica</option>
+                        <option>Giardino & Fai da Te</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Target Cliente</label>
+                <select class="form-select" id="target">
+                    <option>Famiglie</option>
+                    <option>Sportivi</option>
+                    <option>Professionisti</option>
+                    <option>Studenti</option>
+                    <option>Senior</option>
+                    <option>Generico</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" id="generate-btn" onclick="generateAll()" disabled>
+                Genera Tutto con DSS AI
+            </button>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="card">
+                <div class="result-section">
+                    <div class="result-title">Copy & Descrizioni</div>
+                    <div class="result-content" id="copy-content"></div>
+                </div>
+                
+                <div class="result-section">
+                    <div class="result-title">Keywords</div>
+                    <div class="result-content" id="keywords-content"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="result-section">
+                    <div class="result-title">Prompt Immagini AI (Inglese)</div>
+                    <div class="alert alert-info">
+                        <span>💡</span>
+                        <span>Copia questi prompt e usali su Nano Banana, Midjourney o altri tool AI</span>
+                    </div>
+                    <div class="result-content" id="prompts-content"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="result-section">
+                    <div class="result-title">Guida PDF</div>
+                    <div class="result-content" id="pdf-content"></div>
+                </div>
+                
+                <div class="download-buttons">
+                    <button class="btn btn-download" onclick="downloadPDF()">
+                        Scarica PDF
+                    </button>
+                    <button class="btn btn-download" onclick="downloadJSON()">
+                        Scarica Dati JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Powered by DSS AI Agent - Digital Seller School © 2025
+        </div>
+    </div>
+    
+    <script>
+        // URL del webhook n8n
+        const N8N_WEBHOOK_URL = 'https://digitalsellerschool.app.n8n.cloud/webhook-test/c573d426-b694-4031-87e7-1a73db8337b3';
+        
+        let appState = {
+            imageBase64: null,
+            imageName: null,
+            productData: {},
+            copyData: {},
+            imagePrompts: {},
+            pdfData: {}
+        };
+        
+        // FILE UPLOAD
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            appState.imageName = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                appState.imageBase64 = e.target.result.split(',')[1];
+                
+                const uploadZone = document.getElementById('upload-zone');
+                uploadZone.classList.add('has-file');
+                uploadZone.innerHTML = `
+                    <div class="upload-icon">✅</div>
+                    <img src="${URL.createObjectURL(file)}" class="uploaded-image">
+                    <div class="upload-text">${file.name}</div>
+                    <div class="upload-subtext">Pronto per l'analisi!</div>
+                `;
+                
+                checkCanGenerate();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        document.getElementById('product-url').addEventListener('input', checkCanGenerate);
+        
+        function checkCanGenerate() {
+            const hasImage = !!appState.imageBase64;
+            const hasUrl = document.getElementById('product-url').value.trim() !== '';
+            document.getElementById('generate-btn').disabled = !(hasImage || hasUrl);
+        }
+        
+        // CALL n8n WEBHOOK
+        async function callN8N(prompt) {
+            const response = await fetch(N8N_WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: prompt
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Errore n8n: ${response.status}`);
+            }
+            
+            // n8n ora restituisce testo puro invece di JSON
+            return await response.text();
+        }
+        
+        async function generateAll() {
+            const name = document.getElementById('product-name').value || 'Prodotto';
+            const category = document.getElementById('category').value;
+            const target = document.getElementById('target').value;
+            const productUrl = document.getElementById('product-url').value;
+            
+            const competitorUrls = [
+                document.getElementById('competitor-url-1').value,
+                document.getElementById('competitor-url-2').value,
+                document.getElementById('competitor-url-3').value
+            ].filter(url => url.trim() !== '');
+            
+            if (!appState.imageBase64 && !productUrl) {
+                alert('Carica una foto o inserisci un URL Amazon!');
+                return;
+            }
+            
+            appState.productData = { name, category, target, productUrl, competitorUrls };
+            
+            const btn = document.getElementById('generate-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> L\'agente DSS sta analizzando...';
+            
+            try {
+                const copyData = await generateCopy();
+                appState.copyData = copyData;
+                renderCopy(copyData);
+                
+                const prompts = await generateImagePrompts(copyData);
+                appState.imagePrompts = prompts;
+                renderPrompts(prompts);
+                
+                const pdfData = await generatePDFGuide(copyData);
+                appState.pdfData = pdfData;
+                renderPDF(pdfData);
+                
+                document.getElementById('results').classList.add('show');
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                
+                btn.innerHTML = 'Completato!';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Errore durante la generazione. Riprova!');
+                btn.disabled = false;
+                btn.innerHTML = 'Genera Tutto con DSS AI';
+            }
+        }
+        
+        async function generateCopy() {
+            let prompt = `Sei l'agente DSS (Digital Seller School). Analizza questo prodotto e genera copy ottimizzato per Amazon.
+
+PRODOTTO: ${appState.productData.name}
+CATEGORIA: ${appState.productData.category}
+TARGET: ${appState.productData.target}`;
+
+            if (appState.productData.productUrl) {
+                prompt += `\nURL PRODOTTO: ${appState.productData.productUrl}`;
+            }
+
+            if (appState.productData.competitorUrls.length > 0) {
+                prompt += `\n\nURL COMPETITOR:\n`;
+                appState.productData.competitorUrls.forEach((url, i) => {
+                    prompt += `${i+1}. ${url}\n`;
+                });
+            }
+
+            prompt += `
+
+Rispondi SOLO con JSON valido (no markdown, no backticks, no testo aggiuntivo):
+{
+  "analisi": "breve descrizione del prodotto",
+  "titoli": ["titolo 1 ottimizzato SEO", "titolo 2 variante"],
+  "bullet_points": ["bullet 1", "bullet 2", "bullet 3", "bullet 4", "bullet 5"],
+  "descrizione_breve": "1-2 frasi accattivanti",
+  "descrizione_lunga": "paragrafo dettagliato 100-150 parole",
+  "keywords_hot": ["kw1", "kw2", "kw3", "kw4", "kw5"],
+  "keywords_long": ["long tail 1", "long tail 2", "long tail 3"],
+  "specifiche": [{"label": "Materiale", "valore": "Bambù"}, {"label": "Dimensioni", "valore": "30x20cm"}],
+  "use_case": "cucina",
+  "vantaggi_vs_competitor": ["vantaggio 1", "vantaggio 2"]
+}`;
+            
+            const text = await callN8N(prompt);
+            const cleanText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+            return JSON.parse(cleanText);
+        }
+        
+        async function generateImagePrompts(copyData) {
+            const prompt = `You are DSS AI Agent. Generate AI image prompts in ENGLISH for product photography.
+
+PRODUCT: ${appState.productData.name}
+CATEGORY: ${appState.productData.category}
+USE CASE: ${copyData.use_case}
+DESCRIPTION: ${copyData.descrizione_breve}
+
+Respond ONLY with valid JSON (no markdown, no additional text):
+{
+  "packshot": "professional product photography, white background, studio lighting, centered composition, 4K resolution, commercial quality",
+  "lifestyle": "product in realistic home setting, natural daylight, authentic use case, lifestyle photography style",
+  "infographic": "clean product infographic, key features highlighted, modern design, easy to read labels"
+}`;
+            
+            const text = await callN8N(prompt);
+            const cleanText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+            return JSON.parse(cleanText);
+        }
+        
+        async function generatePDFGuide(copyData) {
+            const prompt = `Sei l'agente DSS. Crea una guida d'uso professionale per: ${appState.productData.name}
+
+CATEGORIA: ${appState.productData.category}
+DESCRIZIONE: ${copyData.descrizione_lunga}
+
+Rispondi SOLO con JSON valido (no markdown, no testo aggiuntivo):
+{
+  "titolo": "Guida d'Uso - ${appState.productData.name}",
+  "sezioni": [
+    {"titolo": "Benvenuto", "contenuto": "Introduzione al prodotto, cosa include la confezione, caratteristiche principali. 150-200 parole."},
+    {"titolo": "Come Usarlo", "contenuto": "Istruzioni dettagliate passo-passo per l'utilizzo ottimale. 200-250 parole."},
+    {"titolo": "Tips & Trucchi", "contenuto": "Consigli pratici per sfruttare al meglio il prodotto, casi d'uso avanzati. 200 parole."},
+    {"titolo": "Manutenzione", "contenuto": "Come pulire, conservare e mantenere il prodotto in ottime condizioni. 150 parole."},
+    {"titolo": "FAQ", "contenuto": "5 domande frequenti con risposte dettagliate. 200 parole."}
+  ]
+}`;
+            
+            const text = await callN8N(prompt);
+            const cleanText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+            return JSON.parse(cleanText);
+        }
+        
+        function renderCopy(data) {
+            document.getElementById('copy-content').innerHTML = `
+                <div class="alert alert-success">
+                    <span>✅</span>
+                    <span>${data.analisi}</span>
+                </div>
+                <p><strong>Titoli:</strong></p>
+                ${data.titoli.map(t => `<p>• ${t}</p>`).join('')}
+                <p style="margin-top: 16px;"><strong>Bullet Points:</strong></p>
+                ${data.bullet_points.map(b => `<p>• ${b}</p>`).join('')}
+                <p style="margin-top: 16px;"><strong>Descrizione Breve:</strong></p>
+                <p>${data.descrizione_breve}</p>
+                <p style="margin-top: 16px;"><strong>Descrizione Lunga:</strong></p>
+                <p>${data.descrizione_lunga}</p>
+                ${data.vantaggi_vs_competitor ? `
+                    <p style="margin-top: 16px;"><strong>Vantaggi vs Competitor:</strong></p>
+                    ${data.vantaggi_vs_competitor.map(v => `<p>• ${v}</p>`).join('')}
+                ` : ''}
+            `;
+            
+            document.getElementById('keywords-content').innerHTML = `
+                <p><strong>HOT Keywords:</strong></p>
+                <div>${data.keywords_hot.map(k => `<span class="keyword-tag hot">${k}</span>`).join('')}</div>
+                <p style="margin-top: 16px;"><strong>Long-tail Keywords:</strong></p>
+                <div>${data.keywords_long.map(k => `<span class="keyword-tag">${k}</span>`).join('')}</div>
+            `;
+        }
+        
+        function renderPrompts(prompts) {
+            document.getElementById('prompts-content').innerHTML = `
+                <p><strong>1. Packshot:</strong></p>
+                <div class="prompt-box">${prompts.packshot}</div>
+                <p style="margin-top: 20px;"><strong>2. Lifestyle:</strong></p>
+                <div class="prompt-box">${prompts.lifestyle}</div>
+                <p style="margin-top: 20px;"><strong>3. Infografica:</strong></p>
+                <div class="prompt-box">${prompts.infographic}</div>
+            `;
+        }
+        
+        function renderPDF(data) {
+            document.getElementById('pdf-content').innerHTML = `
+                <p><strong>${data.titolo}</strong></p>
+                ${data.sezioni.map(s => `
+                    <div style="margin-top: 20px;">
+                        <p><strong style="color: #FF9900;">${s.titolo}</strong></p>
+                        <p style="margin-top: 8px; color: #565959;">${s.contenuto.substring(0, 200)}...</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        function downloadPDF() {
+            const pdf = appState.pdfData;
+            const html = `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>${pdf.titolo}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.8; color: #0f1111; }
+        h1 { color: #FF9900; border-bottom: 4px solid #FF9900; padding-bottom: 16px; }
+        h2 { color: #0f1111; margin-top: 32px; }
+        .section { margin-bottom: 32px; }
+        footer { margin-top: 60px; padding-top: 20px; border-top: 2px solid #d5d9d9; text-align: center; color: #565959; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <h1>${pdf.titolo}</h1>
+    ${pdf.sezioni.map(s => `
+        <div class="section">
+            <h2>${s.titolo}</h2>
+            <p>${s.contenuto}</p>
+        </div>
+    `).join('')}
+    <footer>
+        <div>Generato con <strong style="color: #FF9900;">DSS AI Agent</strong></div>
+        <div style="margin-top: 8px;">Digital Seller School © ${new Date().getFullYear()}</div>
+    </footer>
+</body>
+</html>`;
+            
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `guida_DSS_${appState.productData.name.replace(/\s+/g, '_')}.html`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        }
+        
+        function downloadJSON() {
+            const data = {
+                generated_by: "DSS AI Agent",
+                product: appState.productData,
+                copy: appState.copyData,
+                image_prompts: appState.imagePrompts,
+                pdf: appState.pdfData,
+                generated_at: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dss_product_${Date.now()}.json`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        }
+    </script>
+</body>
+</html>
